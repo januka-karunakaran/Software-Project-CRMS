@@ -1002,14 +1002,6 @@ function App() {
         <h1 className="text-2xl font-bold text-slate-800">
           Welcome to your Dashboard!
         </h1>
-        <div className="flex items-center gap-4">
-          <Bell className="text-[#5D57A3]" size={22} />
-          <img
-            src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
-            className="w-10 h-10 rounded-full border-2 border-white shadow-sm"
-            alt="profile"
-          />
-        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">

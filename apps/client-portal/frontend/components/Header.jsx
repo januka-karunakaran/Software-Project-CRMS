@@ -27,30 +27,6 @@ const Header = ({
         </div>
 
         <div className="flex items-center space-x-6">
-          <button
-            onClick={onNavigateSettings}
-            className="p-3 hover:bg-white/20 rounded-full transition-all group"
-          >
-            <div className="transform group-hover:rotate-45 transition-transform duration-300">
-              <Icons.Settings />
-            </div>
-          </button>
-          <button
-            onClick={onToggleNotifications}
-            className={`p-3 hover:bg-white/20 rounded-full transition-all relative ${
-              showNotifications ? "bg-white/30" : ""
-            }`}
-          >
-            <Icons.Notification />
-            <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
-          </button>
-          <button
-            onClick={onLogout}
-            className="bg-[#111827]/40 rounded-full p-2 border border-white/40 cursor-pointer hover:bg-white/20 transition-all shadow-lg"
-            title="Sign Out"
-          >
-            <Icons.User />
-          </button>
         </div>
       </div>
     </header>
