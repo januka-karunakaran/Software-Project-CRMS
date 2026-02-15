@@ -89,6 +89,7 @@ const PRD_DATA = [
     title: "Smart Task Allocation and Tracking System",
     status: "Accepted",
     lastModified: "John Doe",
+    createdDate: "2025-11-01",
     version: "1.2"
   },
   {
@@ -96,6 +97,7 @@ const PRD_DATA = [
     title: "Inventory Management and Billing System",
     status: "Rejected",
     lastModified: "James",
+    createdDate: "2025-04-29",
     version: "1.0"
   },
   {
@@ -103,6 +105,7 @@ const PRD_DATA = [
     title: "Student Information Management System",
     status: "Accepted",
     lastModified: "Amanda",
+    createdDate: "2025-05-29",
     version: "1.1"
   }
 ];
@@ -879,6 +882,69 @@ function App() {
       status
     });
     setIsEditingPrd(false);
+  };
+
+  const splitLines = (value) =>
+    String(value || "")
+      .split(/\r?\n/)
+      .map((item) => item.trim())
+      .filter(Boolean);
+
+  const handleCreatePrd = () => {
+    if (!canSubmit) {
+      return;
+    }
+
+    const nextIndex = prdList.length + 1;
+    const pid = `${String(nextIndex).padStart(3, "0")}${String.fromCharCode(
+      65 + ((nextIndex - 1) % 26)
+    )}`;
+    const createdDate = formValues.dateSubmitted.trim();
+
+    const newPrd = {
+      pid,
+      title: formValues.projectName.trim(),
+      status: "Draft",
+      lastModified: formValues.author.trim(),
+      createdDate,
+      version: "1.0",
+      functionalRequirements: splitLines(formValues.functionalRequirement),
+      projectOverview: splitLines(formValues.mainFeatures),
+      reviewers: DEFAULT_REVIEWERS
+    };
+
+    setPrdList((prev) => [newPrd, ...prev]);
+    setSelectedPrdId(pid);
+    setIsEditingPrd(false);
+    setEditPrdForm({
+      pid: "",
+      title: "",
+      lastModified: "",
+      version: "",
+      status: "",
+      functionalRequirements: [],
+      projectOverview: [],
+      reviewers: []
+    });
+    setFormValues({
+      projectName: "",
+      author: "",
+      dateSubmitted: "",
+      purpose: "",
+      problem: "",
+      goal: "",
+      inScope: "",
+      outScope: "",
+      mainFeatures: "",
+      functionalRequirement: "",
+      nonFunctionalRequirement: "",
+      userRoles: "",
+      riskDependencies: ""
+    });
+    setStakeholders([{ role: "", name: "", responsibility: "" }]);
+    setMilestones([{ phase: "", task: "", duration: "", responsibility: "" }]);
+    setShowCreateModal(false);
+    setActiveTab("repository");
   };
 
   const updateFormField = (key) => (event) => {
@@ -2494,73 +2560,82 @@ function App() {
       history: "Version History"
     }[activeTab] || "CRMS";
 
+
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
   return (
     <div className="flex h-screen bg-[#F8F9FE] font-sans text-gray-800 overflow-hidden">
-      <div className="w-64 bg-[#212134] text-white flex flex-col py-6">
-        <div className="flex items-center gap-3 px-6 mb-10">
+      <div className={sidebarCollapsed ? "w-20 bg-[#212134] text-white flex flex-col py-6 transition-all duration-200" : "w-64 bg-[#212134] text-white flex flex-col py-6 transition-all duration-200"}>
+        <div className={sidebarCollapsed ? "flex flex-col items-center gap-3 px-2 mb-10" : "flex items-center gap-3 px-6 mb-10"}>
           <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
             <div className="w-6 h-6 border-2 border-white rounded-lg rotate-45 flex items-center justify-center">
               <div className="w-2 h-2 bg-white rounded-full" />
             </div>
           </div>
-          <span className="text-2xl font-bold tracking-tight">CRMS</span>
-          <MoreVertical className="ml-auto text-gray-500" size={20} />
+          {!sidebarCollapsed && <span className="text-2xl font-bold tracking-tight">CRMS</span>}
+          <button
+            className={sidebarCollapsed ? "mt-2" : "ml-auto"}
+            onClick={() => setSidebarCollapsed((prev) => !prev)}
+            aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            <MoreVertical className="text-gray-500" size={20} />
+          </button>
         </div>
 
         <nav className="flex-1 space-y-1">
           <SidebarItem
             id="dashboard"
             icon={LayoutDashboard}
-            label="Dashboard"
+            label={sidebarCollapsed ? "" : "Dashboard"}
             active={activeTab === "dashboard"}
             onClick={setActiveTab}
           />
           <SidebarItem
             id="proposals"
             icon={FileText}
-            label="Proposals"
+            label={sidebarCollapsed ? "" : "Proposals"}
             active={activeTab === "proposals"}
             onClick={setActiveTab}
           />
           <SidebarItem
             id="create"
             icon={PlusCircle}
-            label="Create project proposal"
+            label={sidebarCollapsed ? "" : "Create project proposal"}
             active={activeTab === "create"}
             onClick={setActiveTab}
           />
           <SidebarItem
             id="kanban"
             icon={Kanban}
-            label="kanban board"
+            label={sidebarCollapsed ? "" : "kanban board"}
             active={activeTab === "kanban"}
             onClick={setActiveTab}
           />
           <SidebarItem
             id="repository"
             icon={Database}
-            label="PRD Repository"
+            label={sidebarCollapsed ? "" : "PRD Repository"}
             active={activeTab === "repository"}
             onClick={setActiveTab}
           />
           <SidebarItem
             id="details"
             icon={FileEdit}
-            label="PRD Details& Editors"
+            label={sidebarCollapsed ? "" : "PRD Details& Editors"}
             active={activeTab === "details"}
             onClick={setActiveTab}
           />
           <SidebarItem
             id="audit"
             icon={History}
-            label="Audit Trail"
+            label={sidebarCollapsed ? "" : "Audit Trail"}
             active={activeTab === "audit"}
             onClick={setActiveTab}
           />
           <SidebarItem
             id="history"
             icon={CheckCircle}
-            label="Version History"
+            label={sidebarCollapsed ? "" : "Version History"}
             active={activeTab === "history"}
             onClick={setActiveTab}
           />
@@ -2831,7 +2906,7 @@ function App() {
                       Date submitted:
                     </label>
                     <input
-                      type="text"
+                      type="date"
                       value={formValues.dateSubmitted}
                       onChange={updateFormField("dateSubmitted")}
                       className="w-full bg-[#E5E5E5] border-none rounded-lg p-3"
@@ -3119,13 +3194,7 @@ function App() {
                   </p>
                 )}
                 <button
-                  onClick={() => {
-                    if (!canSubmit) {
-                      return;
-                    }
-                    setShowCreateModal(false);
-                    setActiveTab("repository");
-                  }}
+                  onClick={handleCreatePrd}
                   className={cn(
                     "px-10 py-3 rounded-lg font-bold shadow-lg",
                     canSubmit

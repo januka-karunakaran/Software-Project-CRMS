@@ -64,7 +64,7 @@ export default function PrdRepositorySection({ prdList, onCreate, onReview }) {
                 <th className="pb-4 font-semibold px-4">PID</th>
                 <th className="pb-4 font-semibold px-4">Title</th>
                 <th className="pb-4 font-semibold px-4">Status</th>
-                <th className="pb-4 font-semibold px-4">Last Modified</th>
+                <th className="pb-4 font-semibold px-4">Created Date</th>
                 <th className="pb-4 font-semibold text-center">Action</th>
               </tr>
             </thead>
@@ -79,7 +79,7 @@ export default function PrdRepositorySection({ prdList, onCreate, onReview }) {
                     <span className="font-medium text-gray-800">{prd.status}</span>
                   </td>
                   <td className="py-6 px-4 text-gray-500 font-medium">
-                    {prd.lastModified}
+                    {prd.createdDate || prd.lastModified}
                   </td>
                   <td className="py-6 px-4">
                     <div className="flex gap-3 justify-center">

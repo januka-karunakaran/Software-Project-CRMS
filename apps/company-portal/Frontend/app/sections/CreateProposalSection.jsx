@@ -16,6 +16,38 @@ export default function CreateProposalSection({
   onClear,
   onSubmit
 }) {
+  const now = new Date();
+  const minDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(
+    now.getDate()
+  ).padStart(2, "0")}`;
+  const isNonEmpty = (value) => String(value ?? "").trim() !== "";
+  const isProposalComplete =
+    isNonEmpty(newProposal.title) &&
+    isNonEmpty(newProposal.client) &&
+    isNonEmpty(newProposal.description);
+  const isTimelineComplete =
+    timelineData.length > 0 &&
+    timelineData.every(
+      (row) =>
+        isNonEmpty(row.phase) &&
+        isNonEmpty(row.startDate) &&
+        isNonEmpty(row.endDate) &&
+        isNonEmpty(row.duration) &&
+        isNonEmpty(row.assignedTo) &&
+        isNonEmpty(row.status)
+    );
+  const isBudgetComplete =
+    budgetData.length > 0 &&
+    budgetData.every(
+      (row) =>
+        isNonEmpty(row.item) &&
+        isNonEmpty(row.description) &&
+        isNonEmpty(row.quantity) &&
+        isNonEmpty(row.unitPrice) &&
+        isNonEmpty(row.total)
+    );
+  const isFormValid = isProposalComplete && isTimelineComplete && isBudgetComplete;
+
   return (
     <div className="p-8 max-w-5xl mx-auto w-full">
       <h1 className="text-3xl font-bold text-slate-800 mb-6">
@@ -95,6 +127,7 @@ export default function CreateProposalSection({
                               newData[idx].startDate = event.target.value;
                               setTimelineData(newData);
                             }}
+                            min={minDate}
                             className="w-full p-1 bg-slate-50 rounded"
                           />
                         </td>
@@ -107,6 +140,7 @@ export default function CreateProposalSection({
                               newData[idx].endDate = event.target.value;
                               setTimelineData(newData);
                             }}
+                            min={minDate}
                             className="w-full p-1 bg-slate-50 rounded"
                           />
                         </td>
@@ -323,6 +357,11 @@ export default function CreateProposalSection({
           )}
         </div>
 
+        {!isFormValid && (
+          <p className="text-sm text-red-600 mt-6">
+            All fields are required. Fill every column to enable submit.
+          </p>
+        )}
         <div className="flex gap-4 pt-6 border-t mt-6">
           <button
             onClick={onClear}
@@ -332,7 +371,12 @@ export default function CreateProposalSection({
           </button>
           <button
             onClick={onSubmit}
-            className="px-6 py-3 bg-blue-800 text-white rounded hover:bg-blue-900 font-bold"
+            disabled={!isFormValid}
+            className={`px-6 py-3 text-white rounded font-bold ${
+              isFormValid
+                ? "bg-blue-800 hover:bg-blue-900"
+                : "bg-slate-300 cursor-not-allowed"
+            }`}
           >
             Submit
           </button>
